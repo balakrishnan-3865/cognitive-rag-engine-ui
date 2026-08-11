@@ -7,6 +7,23 @@ export interface ErrorResponse {
   validationErrors?: Record<string, string>;
 }
 
+export interface RegisterRequest {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface RefreshRequest {
+  refreshToken: string;
+}
+
 export interface TokenPairResponse {
   accessToken: string;
   refreshToken: string;

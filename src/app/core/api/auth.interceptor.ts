@@ -1,18 +1,14 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, switchMap, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { TokenPairResponse } from '../../models/types';
+import { catchError, from, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { HttpClient } from '@angular/common/http';
 import { ToastService } from '../../shared/toast/toast.service';
 
 const PUBLIC_AUTH_PATHS = ['/api/v1/auth/login', '/api/v1/auth/register', '/api/v1/auth/refresh'];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const http = inject(HttpClient);
   const router = inject(Router);
   const toastService = inject(ToastService);
 
@@ -33,25 +29,23 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
-      return http
-        .post<TokenPairResponse>(`${environment.apiBaseUrl}/api/v1/auth/refresh`, {
-          refreshToken,
-        })
-        .pipe(
-          switchMap((tokens) => {
-            authService.setSession(tokens);
-            const retriedReq = req.clone({
-              setHeaders: { Authorization: `Bearer ${tokens.accessToken}` },
-            });
-            return next(retriedReq);
-          }),
-          catchError((refreshError: unknown) => {
-            authService.clearSession();
-            toastService.error('Your session has expired. Please log in again.');
-            router.navigate(['/login']);
-            return throwError(() => refreshError);
-          }),
-        );
+      return from(authService.refresh()).pipe(
+        switchMap((tokens) => {
+          const retriedReq = req.clone({
+            setHeaders: { Authorization: `Bearer ${tokens.accessToken}` },
+          });
+          return next(retriedReq);
+        }),
+        catchError((refreshError: unknown) => {
+          return from(authService.revoke().catch(() => undefined)).pipe(
+            switchMap(() => {
+              toastService.error('Your session has expired. Please log in again.');
+              router.navigate(['/login']);
+              return throwError(() => refreshError);
+            }),
+          );
+        }),
+      );
     }),
   );
 };

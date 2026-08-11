@@ -67,8 +67,8 @@ export class ShellComponent {
   private readonly router = inject(Router);
   protected readonly navItems = NAV_ITEMS;
 
-  logout(): void {
-    this.authService.clearSession();
+  async logout(): Promise<void> {
+    await this.authService.revoke().catch(() => undefined);
     this.router.navigate(['/login']);
   }
 }
