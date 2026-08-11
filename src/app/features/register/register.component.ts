@@ -10,6 +10,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { ToastService } from '../../shared/toast/toast.service';
+import { LogoComponent } from '../../shared/logo/logo.component';
 
 function passwordRuleValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -52,76 +53,116 @@ function passwordRuleValidator(): ValidatorFn {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, LogoComponent],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-slate-50">
-      <form
-        [formGroup]="form"
-        (ngSubmit)="submit()"
-        class="w-full max-w-sm bg-white p-8 rounded-lg shadow-sm border border-slate-200"
+    <div class="flex min-h-screen">
+      <div
+        class="relative hidden overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-red-950 lg:flex lg:w-1/2 lg:flex-col lg:justify-between lg:p-14"
       >
-        <h1 class="text-xl font-semibold mb-6 text-slate-900">Register</h1>
+        <div class="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-red-600/20 blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-blue-600/10 blur-3xl"></div>
 
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="firstName">First name</label>
-        <input
-          id="firstName"
-          type="text"
-          formControlName="firstName"
-          class="w-full mb-4 px-3 py-2 border border-slate-300 rounded-md text-sm"
-        />
+        <app-logo size="lg" theme="dark" class="relative" />
 
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="lastName">Last name</label>
-        <input
-          id="lastName"
-          type="text"
-          formControlName="lastName"
-          class="w-full mb-4 px-3 py-2 border border-slate-300 rounded-md text-sm"
-        />
+        <div class="relative flex flex-col gap-6">
+          <h2 class="max-w-md text-3xl font-semibold leading-tight text-white">
+            One workspace for every document your team relies on.
+          </h2>
+          <ul class="flex flex-col gap-3 text-sm text-white/70">
+            <li class="flex items-center gap-2.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+              Secure, per-user document scoping
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+              Version history with async ingestion status
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+              Cited, source-grounded answers every time
+            </li>
+          </ul>
+        </div>
 
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          class="w-full mb-4 px-3 py-2 border border-slate-300 rounded-md text-sm"
-        />
+        <p class="relative text-xs text-white/40">© 2026 Cognitive. All rights reserved.</p>
+      </div>
 
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          class="w-full mb-4 px-3 py-2 border border-slate-300 rounded-md text-sm"
-        />
+      <div class="flex w-full items-center justify-center bg-slate-50 p-8 lg:w-1/2">
+        <div class="w-full max-w-sm">
+          <div class="mb-8 flex justify-center lg:hidden">
+            <app-logo size="lg" theme="light" />
+          </div>
 
-        <label class="block text-sm font-medium text-slate-700 mb-1" for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          class="w-full mb-2 px-3 py-2 border border-slate-300 rounded-md text-sm"
-        />
-        @if (form.controls.password.touched && form.controls.password.invalid) {
-          <p class="text-xs text-red-600 mb-4">
-            12–64 characters, at least 3 of uppercase/lowercase/digit/special, and must not match
-            your username or email.
-          </p>
-        } @else {
-          <p class="mb-4"></p>
-        }
+          <form
+            [formGroup]="form"
+            (ngSubmit)="submit()"
+            class="w-full rounded-xl border border-slate-200 bg-white p-8 shadow-md"
+          >
+            <h1 class="mb-1 text-xl font-semibold text-slate-900">Create your account</h1>
+            <p class="mb-6 text-sm text-slate-500">Get started with Cognitive in a few seconds.</p>
 
-        <button
-          type="submit"
-          [disabled]="form.invalid || submitting()"
-          class="w-full bg-slate-900 text-white text-sm font-medium py-2 rounded-md disabled:opacity-50"
-        >
-          {{ submitting() ? 'Registering…' : 'Register' }}
-        </button>
+            <label class="mb-1 block text-sm font-medium text-slate-700" for="firstName">First name</label>
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="mb-4 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            />
 
-        <p class="text-sm text-slate-500 mt-4 text-center">
-          Already have an account? <a routerLink="/login" class="text-slate-900 font-medium">Log in</a>
-        </p>
-      </form>
+            <label class="mb-1 block text-sm font-medium text-slate-700" for="lastName">Last name</label>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="mb-4 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            />
+
+            <label class="mb-1 block text-sm font-medium text-slate-700" for="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              formControlName="username"
+              class="mb-4 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            />
+
+            <label class="mb-1 block text-sm font-medium text-slate-700" for="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="mb-4 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            />
+
+            <label class="mb-1 block text-sm font-medium text-slate-700" for="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              class="mb-2 w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+            />
+            @if (form.controls.password.touched && form.controls.password.invalid) {
+              <p class="mb-4 text-xs text-red-600">
+                12–64 characters, at least 3 of uppercase/lowercase/digit/special, and must not match
+                your username or email.
+              </p>
+            } @else {
+              <p class="mb-4"></p>
+            }
+
+            <button
+              type="submit"
+              [disabled]="form.invalid || submitting()"
+              class="w-full rounded-md bg-red-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {{ submitting() ? 'Registering…' : 'Register' }}
+            </button>
+
+            <p class="mt-5 text-center text-sm text-slate-500">
+              Already have an account? <a routerLink="/login" class="font-medium text-blue-700 hover:underline">Log in</a>
+            </p>
+          </form>
+        </div>
+      </div>
     </div>
   `,
 })

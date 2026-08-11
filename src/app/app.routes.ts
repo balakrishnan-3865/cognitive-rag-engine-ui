@@ -18,25 +18,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'documents',
+        path: 'workspace',
         loadComponent: () =>
-          import('./features/documents/documents.component').then((m) => m.DocumentsComponent),
+          import('./features/workspace/workspace.component').then((m) => m.WorkspaceComponent),
       },
-      {
-        path: 'qa',
-        loadComponent: () => import('./features/qa/qa.component').then((m) => m.QaComponent),
-      },
-      {
-        path: 'assistant',
-        loadComponent: () =>
-          import('./features/assistant/assistant.component').then((m) => m.AssistantComponent),
-      },
-      {
-        path: 'claims',
-        loadComponent: () =>
-          import('./features/claims/claims.component').then((m) => m.ClaimsComponent),
-      },
-      { path: '', pathMatch: 'full', redirectTo: 'qa' },
+      { path: '', pathMatch: 'full', redirectTo: 'workspace' },
     ],
   },
   { path: '**', redirectTo: 'login' },
